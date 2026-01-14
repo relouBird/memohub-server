@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoHub API - ENSP Douala</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #E63946;
+            --accent-color: #2A9D8F;
+            --light-color: #F1FAEE;
+            --dark-color: #1D3557;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            color: var(--primary-color);
+        }
+
+        .logo-text h1 {
+            font-size: 42px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 18px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .tagline {
+            font-size: 24px;
+            color: var(--dark-color);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .api-info {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .api-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .endpoint-card {
+            background: var(--light-color);
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .endpoint-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .endpoint-card.get {
+            border-left-color: #4CAF50;
+        }
+
+        .endpoint-card.post {
+            border-left-color: #2196F3;
+        }
+
+        .endpoint-card.put {
+            border-left-color: #FF9800;
+        }
+
+        .endpoint-card.delete {
+            border-left-color: #F44336;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .method.get {
+            background-color: #4CAF50;
+        }
+
+        .method.post {
+            background-color: #2196F3;
+        }
+
+        .method.put {
+            background-color: #FF9800;
+        }
+
+        .method.patch {
+            background-color: #FF9800;
+        }
+
+        .method.delete {
+            background-color: #F44336;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 16px;
+        }
+
+        .endpoint-description {
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .actions {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #002244;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 51, 102, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #c1121f;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .endpoints {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .logo-text h1 {
+                font-size: 32px;
+            }
+            
+            .tagline {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>MemoHub API</h1>
+                    <p>ENSP Douala - Gestion des Mémoires</p>
+                </div>
+            </div>
+            
+            <p class="tagline">API REST pour la gestion des mémoires de fin d'études</p>
+        </div>
+
+        <div class="api-info">
+            <h2>Endpoints API Disponibles</h2>
+            
+            <div class="endpoints">
+                <!-- TRACKS Endpoints -->
+                <div class="endpoint-card get">
+                    <span class="method get">GET</span>
+                    <div class="endpoint-path">/api/tracks/</div>
+                    <div class="endpoint-description">
+                        <strong>Récupérer toutes les filières</strong><br>
+                        Retourne la liste complète des tracks/filières disponibles
+                    </div>
+                </div>
+
+                <div class="endpoint-card post">
+                    <span class="method post">POST</span>
+                    <div class="endpoint-path">/api/tracks/create/</div>
+                    <div class="endpoint-description">
+                        <strong>Créer une nouvelle filière</strong><br>
+                        Ajoute une nouvelle track/filière à la base de données
+                    </div>
+                </div>
+
+                <div class="endpoint-card get">
+                    <span class="method get">GET</span>
+                    <div class="endpoint-path">/api/tracks/&lt;int:track_id&gt;/</div>
+                    <div class="endpoint-description">
+                        <strong>Récupérer une filière par ID</strong><br>
+                        Retourne les détails d'une track/filière spécifique
+                    </div>
+                </div>
+
+                <div class="endpoint-card patch">
+                    <span class="method patch">PATCH</span>
+                    <div class="endpoint-path">/api/tracks/update/&lt;int:track_id&gt;/</div>
+                    <div class="endpoint-description">
+                        <strong>Mettre à jour une filière</strong><br>
+                        Met à jour partiellement les informations d'une track/filière
+                    </div>
+                </div>
+
+                <div class="endpoint-card delete">
+                    <span class="method delete">DELETE</span>
+                    <div class="endpoint-path">/api/tracks/delete/&lt;int:track_id&gt;/</div>
+                    <div class="endpoint-description">
+                        <strong>Supprimer une filière</strong><br>
+                        Supprime une track/filière de la base de données
+                    </div>
+                </div>
+
+                <!-- À compléter avec d'autres endpoints -->
+                <div class="endpoint-card get">
+                    <span class="method get">GET</span>
+                    <div class="endpoint-path">/api/memoires/</div>
+                    <div class="endpoint-description">
+                        <strong>Récupérer tous les mémoires</strong><br>
+                        Retourne la liste complète des mémoires
+                    </div>
+                </div>
+
+                <div class="endpoint-card get">
+                    <span class="method get">GET</span>
+                    <div class="endpoint-path">/api/encadreurs/</div>
+                    <div class="endpoint-description">
+                        <strong>Récupérer tous les encadreurs</strong><br>
+                        Retourne la liste complète des encadreurs
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>CRUD</h3>
+                <p>Opérations complètes</p>
+            </div>
+            <div class="stat-card">
+                <h3>REST</h3>
+                <p>Architecture RESTful</p>
+            </div>
+            <div class="stat-card">
+                <h3>JSON</h3>
+                <p>Format de données</p>
+            </div>
+            <div class="stat-card">
+                <h3>JWT</h3>
+                <p>Authentification</p>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <span class="tech-item">Django</span>
+            <span class="tech-item">Django REST Framework</span>
+            <span class="tech-item">SQLite</span>
+            <span class="tech-item">Python</span>
+            <span class="tech-item">JSON</span>
+        </div>
+
+        <div class="actions">
+            <a href="/api/tracks/" class="btn btn-primary">
+                <i class="fas fa-play-circle"></i> Tester l'API
+            </a>
+            <a href="/admin/" class="btn btn-secondary">
+                <i class="fas fa-cogs"></i> Interface Admin
+            </a>
+            <a href="/docs/" class="btn btn-outline">
+                <i class="fas fa-book"></i> Documentation
+            </a>
+        </div>
+
+        <div class="footer">
+            <p><strong>MemoHub API</strong> - Système de gestion des mémoires de fin d'études</p>
+            <p>École Nationale Supérieure Polytechnique de Douala</p>
+            <p>© 2025 - Développé avec Django & Django REST Framework</p>
+            <p>Version: 1.0.0 | Statut: <span style="color: #4CAF50; font-weight: bold;">● En ligne</span></p>
+            <p style="margin-top: 10px;">
+                <a href="/api/tracks/">API Tracks</a> | 
+                <a href="/api/memoires/">API Mémoires</a> | 
+                <a href="/api/encadreurs/">API Encadreurs</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Ajouter un peu d'interactivité
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation des cartes d'endpoints
+            const endpointCards = document.querySelectorAll('.endpoint-card');
+            endpointCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.5s ease forwards';
+            });
+
+            // Ajouter du style CSS pour l'animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Mettre à jour l'année dynamiquement dans le footer
+            const currentYear = new Date().getFullYear();
+            const yearElement = document.querySelector('.footer p:nth-child(3)');
+            if (yearElement) {
+                yearElement.innerHTML = yearElement.innerHTML.replace('2025', currentYear);
+            }
+        });
+    </script>
+</body>
+</html>
